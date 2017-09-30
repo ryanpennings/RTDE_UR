@@ -1,5 +1,6 @@
 # RTDE_UR
 Real Time Data Exchange streaming for universal robots. (Streams points to robot, for running large files)
+This was specifically developed to run large, complex 3D prints (i.e. 500,000 points and above)
 
 WIP... still updating repo with example files.
 
