@@ -1,0 +1,26 @@
+ thread Thread_1():
+ while (True):
+     sync()
+     if (bufferStatus[bufferFillLoc]==0):
+      write_output_integer_register(0, 1)
+      sync()
+      global tmp=p[0,0,0,0,0,0]
+      tmp[0] = read_input_float_register(0)
+      tmp[1] = read_input_float_register(1)
+      tmp[2] = read_input_float_register(2)
+      tmp[3] = read_input_float_register(3)
+      tmp[4] = read_input_float_register(4)
+      tmp[5] = read_input_float_register(5)
+      listPoints[bufferFillLoc]=tmp
+      speed = read_input_float_register(18)
+      zone = read_input_float_register(19)
+      bufferStatus[bufferFillLoc]=1
+      bufferFillLoc=bufferFillLoc+1
+      if (bufferFillLoc>9):
+        bufferFillLoc=0
+      end
+      write_output_integer_register(0, 0)
+      sync()
+    end
+  end
+end

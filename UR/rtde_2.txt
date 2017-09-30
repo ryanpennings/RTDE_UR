@@ -1,0 +1,19 @@
+ Program
+   BeforeStart
+     write_output_integer_register(0, 0)
+     MoveJ
+       Waypoint_1
+     Popup
+     'set_tcp(p[0.5,-0.013529999999999999,0.09813,-1.2092,-1.2092,1.2092])'
+   Robot Program
+     Script: int
+     Script: tcpsetup.script
+     Script: Thread_1
+     threadId_Thread_1 = run Thread_1()
+     'set_tcp(p[0.5,-0.013529999999999999,0.09813,-1.2092,-1.2092,1.2092])'
+     set_tcp(tcp)
+     set_payload(weight, cog)
+     Loop
+       Script: mainloop
+       Script: varview.script
+     write_output_integer_register(0, 3)

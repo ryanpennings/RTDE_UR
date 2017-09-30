@@ -1,0 +1,148 @@
+def rtde_2():
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_tool_voltage(0)
+  set_input_actions_to_default()
+  set_tcp(p[0.5,-0.013529999999999999,0.09813,-1.2092,-1.2092,1.2092])
+  set_payload(10.0, [0.0, 0.0, 0.0])
+  set_gravity([0.0, 0.0, 9.82])
+  # begin: URCap Installation Node
+  #   Source: HelloWorld, 1.0.0.SNAPSHOT, Universal Robots
+  #   Type: Hello World
+  hello_world_popup_title = "HelloWorld"
+  # end: URCap Installation Node
+  $ 1 "BeforeStart"
+  $ 2 "write_output_integer_register(0, 0)"
+  write_output_integer_register(0, 0)
+  $ 3 "MoveJ"
+  $ 4 "Waypoint_1"
+  movej([0.7892378877518369, -1.7172294510372206, 1.6889551171549142, 0.0022689280275922435, 1.53274814910142, -1.5482815794441693], a=1.3962634015954636, v=1.0471975511965976)
+  $ 5 "Popup"
+  popup("Start Script on PC now", "Message", False, False, blocking=True)
+  $ 7 "Robot Program"
+  $ 8 "Script: int"
+  global setp=p[0,0,0,0,0,0]
+  global setp2=p[0,0,0,0,0,0]
+  global setp3=p[0,0,0,0,0,0]
+  global setp4=p[0,0,0,0,0,0]
+  global setp5=p[0,0,0,0,0,0]
+  global setp6=p[0,0,0,0,0,0]
+  global setp7=p[0,0,0,0,0,0]
+  global setp8=p[0,0,0,0,0,0]
+  global setp9=p[0,0,0,0,0,0]
+  global setp10=p[0,0,0,0,0,0]
+  global moveTo=p[0,0,0,0,0,0]
+  global speed=0.03
+  global zone=0.001
+  global tcp=p[0,0,0,0,0,0]
+  global weight = 0
+  global cog = [0,0,0]
+  global robotloc=0
+  global bufferFillLoc=0
+  listPoints=[setp,setp2,setp3,setp4,setp5,setp6,setp7,setp8,setp9,setp10]
+  listSpeeds=[0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03]
+  listZones=[0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001]
+  bufferStatus=[0,0,0,0,0,0,0,0,0,0]
+  rtde_set_watchdog("input_int_register_0", 1, "PAUSE")
+  write_output_integer_register(0, 0)
+  
+  $ 9 "Script: tcpsetup.script"
+  keep_running = True
+  global loopcheck = 0
+  global loopcheck2 = 0
+  while keep_running:
+    write_output_integer_register(0, 2)
+    sync()
+    sleep(2)
+    global tmpTCP=p[0,0,0,0,0,0]
+    tmpTCP[0] = read_input_float_register(7)
+    tmpTCP[1] = read_input_float_register(8)
+    tmpTCP[2] = read_input_float_register(9)
+    tmpTCP[3] = read_input_float_register(10)
+    tmpTCP[4] = read_input_float_register(11)
+    tmpTCP[5] = read_input_float_register(12)
+    loopcheck = loopcheck + 1
+    if (tmpTCP != p[0,0,0,0,0,0]):
+      loopcheck2 = loopcheck2 + 1
+      tcp=tmpTCP
+      global tmpWeight = 0
+      tmpWeight = read_input_float_register(14)
+      weight = tmpWeight
+      global tmpCOG = [0,0,0]
+      tmpCOG[0] = read_input_float_register(15)
+      tmpCOG[1] = read_input_float_register(16)
+      tmpCOG[2] = read_input_float_register(17)
+      cog = tmpCOG
+      keep_running = False
+    end
+    write_output_integer_register(0, 0)
+    sync()
+  end
+  $ 10 "Script: Thread_1"
+   thread Thread_1():
+   while (True):
+       sync()
+       if (bufferStatus[bufferFillLoc]==0):
+        write_output_integer_register(0, 1)
+        sync()
+        global tmp=p[0,0,0,0,0,0]
+        tmp[0] = read_input_float_register(0)
+        tmp[1] = read_input_float_register(1)
+        tmp[2] = read_input_float_register(2)
+        tmp[3] = read_input_float_register(3)
+        tmp[4] = read_input_float_register(4)
+        tmp[5] = read_input_float_register(5)
+        listPoints[bufferFillLoc]=tmp
+        speed = read_input_float_register(18)
+        zone = read_input_float_register(19)
+        bufferStatus[bufferFillLoc]=1
+        bufferFillLoc=bufferFillLoc+1
+        if (bufferFillLoc>9):
+          bufferFillLoc=0
+        end
+        write_output_integer_register(0, 0)
+        sync()
+      end
+    end
+  end
+  $ 11 "threadId_Thread_1 = run Thread_1()"
+  threadId_Thread_1 = run Thread_1()
+  $ 13 "set_tcp(tcp)"
+  set_tcp(tcp)
+  $ 14 "set_payload(weight, cog)"
+  set_payload(weight, cog)
+  $ 15 "Loop"
+  while (True):
+    $ 16 "Script: mainloop"
+    if (bufferStatus[robotloc]==1):
+          sync()
+          global moveTo=listPoints[robotloc]
+          movel(pose_trans(p[0.0,0.0,0.0,0.0,0.0,0.0], moveTo), a=1.2, v=0.03, r=0.001)
+          bufferStatus[robotloc]=0
+          robotloc=robotloc+1
+          if (robotloc>9):
+            robotloc=0
+          end
+    else:
+          sync()
+    end
+    sync()
+    $ 17 "Script: varview.script"
+    setp=listPoints[0]
+    setp2=listPoints[1]
+    setp3=listPoints[2]
+    setp4=listPoints[3]
+    setp5=listPoints[4]
+    setp6=listPoints[5]
+    setp7=listPoints[6]
+    setp8=listPoints[7]
+    setp9=listPoints[8]
+    setp10=listPoints[9]
+  end
+  $ 18 "write_output_integer_register(0, 3)"
+  write_output_integer_register(0, 3)
+end

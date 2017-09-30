@@ -1,0 +1,13 @@
+if (bufferStatus[robotloc]==1):
+      sync()
+      global moveTo=listPoints[robotloc]
+      movel(pose_trans(p[0.0,0.0,0.0,0.0,0.0,0.0], moveTo), a=1.2, v=0.03, r=0.001)
+      bufferStatus[robotloc]=0
+      robotloc=robotloc+1
+      if (robotloc>9):
+        robotloc=0
+      end
+else:
+      sync()
+end
+sync()

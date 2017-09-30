@@ -1,0 +1,25 @@
+global setp=p[0,0,0,0,0,0]
+global setp2=p[0,0,0,0,0,0]
+global setp3=p[0,0,0,0,0,0]
+global setp4=p[0,0,0,0,0,0]
+global setp5=p[0,0,0,0,0,0]
+global setp6=p[0,0,0,0,0,0]
+global setp7=p[0,0,0,0,0,0]
+global setp8=p[0,0,0,0,0,0]
+global setp9=p[0,0,0,0,0,0]
+global setp10=p[0,0,0,0,0,0]
+global moveTo=p[0,0,0,0,0,0]
+global speed=0.03
+global zone=0.001
+global tcp=p[0,0,0,0,0,0]
+global weight = 0
+global cog = [0,0,0]
+global robotloc=0
+global bufferFillLoc=0
+listPoints=[setp,setp2,setp3,setp4,setp5,setp6,setp7,setp8,setp9,setp10]
+listSpeeds=[0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03]
+listZones=[0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001,0.001]
+bufferStatus=[0,0,0,0,0,0,0,0,0,0]
+rtde_set_watchdog("input_int_register_0", 1, "PAUSE")
+write_output_integer_register(0, 0)
+

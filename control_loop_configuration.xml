@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<rtde_config>
+	<recipe key="state">
+		<field name="target_TCP_pose" type="VECTOR6D"/>
+		<field name="target_TCP_speed" type="VECTOR6D"/>
+		<field name="output_int_register_0" type="INT32"/>
+	</recipe>
+
+	<recipe key="setp">
+		<field name="input_double_register_0" type="DOUBLE"/>
+		<field name="input_double_register_1" type="DOUBLE"/>
+		<field name="input_double_register_2" type="DOUBLE"/>
+		<field name="input_double_register_3" type="DOUBLE"/>
+		<field name="input_double_register_4" type="DOUBLE"/>
+		<field name="input_double_register_5" type="DOUBLE"/>
+    <field name="input_double_register_6" type="DOUBLE"/>
+	</recipe>
+
+  <recipe key="tcp">
+    <field name="input_double_register_7" type="DOUBLE"/>
+    <field name="input_double_register_8" type="DOUBLE"/>
+    <field name="input_double_register_9" type="DOUBLE"/>
+    <field name="input_double_register_10" type="DOUBLE"/>
+    <field name="input_double_register_11" type="DOUBLE"/>
+    <field name="input_double_register_12" type="DOUBLE"/>
+  </recipe>
+
+  <recipe key="tcp_payload">
+    <field name="input_double_register_14" type="DOUBLE"/>
+    <field name="input_double_register_15" type="DOUBLE"/>
+    <field name="input_double_register_16" type="DOUBLE"/>
+    <field name="input_double_register_17" type="DOUBLE"/>
+  </recipe>
+
+  <recipe key="speed">
+    <field name="input_double_register_18" type="DOUBLE"/>
+  </recipe>
+
+  <recipe key="zone">
+    <field name="input_double_register_19" type="DOUBLE"/>
+  </recipe>
+
+	<recipe key="watchdog">
+		<field name="input_int_register_0" type="INT32"/>
+	</recipe>
+</rtde_config>

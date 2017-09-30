@@ -1,0 +1,31 @@
+keep_running = True
+global loopcheck = 0
+global loopcheck2 = 0
+while keep_running:
+  write_output_integer_register(0, 2)
+  sync()
+  sleep(2)
+  global tmpTCP=p[0,0,0,0,0,0]
+  tmpTCP[0] = read_input_float_register(7)
+  tmpTCP[1] = read_input_float_register(8)
+  tmpTCP[2] = read_input_float_register(9)
+  tmpTCP[3] = read_input_float_register(10)
+  tmpTCP[4] = read_input_float_register(11)
+  tmpTCP[5] = read_input_float_register(12)
+  loopcheck = loopcheck + 1
+  if (tmpTCP != p[0,0,0,0,0,0]):
+    loopcheck2 = loopcheck2 + 1
+    tcp=tmpTCP
+    global tmpWeight = 0
+    tmpWeight = read_input_float_register(14)
+    weight = tmpWeight
+    global tmpCOG = [0,0,0]
+    tmpCOG[0] = read_input_float_register(15)
+    tmpCOG[1] = read_input_float_register(16)
+    tmpCOG[2] = read_input_float_register(17)
+    cog = tmpCOG
+    keep_running = False
+  end
+  write_output_integer_register(0, 0)
+  sync()
+end
