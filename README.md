@@ -1,3 +1,6 @@
+#### Disclaimer
+This code is now very old and I left it in a state that didn't produce great robot motion from memory, however it sent data prefectly fine. It appears some text files are missing, see this issue: https://github.com/ryanpennings/RTDE_UR/issues/1 on how to create some.
+
 # RTDE_UR
 Real Time Data Exchange streaming for universal robots. (Streams points to robot, for running large files)
 This was specifically developed to run large, complex 3D prints (i.e. 500,000 points and above, however it doesnt work for that as lots of points in quick succession cause jumpy movement, look at other commands.. [servoJ] from memory)
