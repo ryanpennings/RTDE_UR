@@ -23,8 +23,10 @@
 
 import csv
 
-import serialize
+import sys
+sys.path.append('..')
 
+from rtde import serialize
 
 class CSVWriter(object):
     

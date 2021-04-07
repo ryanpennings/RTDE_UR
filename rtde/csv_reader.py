@@ -23,6 +23,11 @@
 
 import csv
 import numpy as np
+import logging
+
+from .rtde import LOGNAME
+
+_log = logging.getLogger(LOGNAME)
 
 
 runtime_state = 'runtime_state'
@@ -32,44 +37,44 @@ class CSVReader(object):
     __samples = None
     __filename = None
     def get_header_data(self,__reader):
-        header = __reader.next()
+        header = next(__reader)
         return header
-    
+
     def __init__(self, csvfile, delimiter = ' ', filter_running_program=False):
         self.__filename = csvfile.name
-        
+
         csvfile = [csvfile for csvfile in csvfile.readlines() if csvfile.strip()] # remove any empty lines
-        
+
         reader = csv.reader(csvfile, delimiter=delimiter)
         header = self.get_header_data(reader)
-        
+
         # read csv file
         data = [row for row in reader]
-        
+
         if len(data)==0:
-            logging.warn('No data read from file: ' + self.__filename)
-        
-        # filter data 
+            _log.warn('No data read from file: ' + self.__filename)
+
+        # filter data
         if filter_running_program:
             if runtime_state not in header:
-                logging.warn('Unable to filter data since runtime_state field is missing in data set')
+                _log.warn('Unable to filter data since runtime_state field is missing in data set')
             else:
                 idx = header.index(runtime_state)
                 data = [row for row in data if row[idx] == runtime_state_running]
-        
+
         self.__samples = len(data)
-        
+
         if self.__samples == 0:
-            logging.warn('No data left from file: ' + self.__filename + ' after filtering')
-        
+            _log.warn('No data left from file: ' + self.__filename + ' after filtering')
+
         # transpose data
-        data = zip(*data)
-        
+        data = list(zip(*data))
+
         # create dictionary from  header elements (keys) to float arrays
-        self.__dict__.update({header[i]: np.array(map(float, data[:][i])) for i in range(len(header))})
-        
+        self.__dict__.update({header[i]: np.array(list(map(float, data[:][i]))) for i in range(len(header))})
+
     def get_samples(self):
         return self.__samples
-    
+
     def get_name(self):
         return self.__filename

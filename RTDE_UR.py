@@ -31,8 +31,8 @@ import math
 import csv
 import time
 
-print("Universal Robots - Real Time Point Streaming Application")
-print("Ryan Pennings - 2017")
+print("Universal Robots - (semi) Real Time Point Streaming Application")
+print("Ryan Pennings - 2021")
 print("For enquiries/suppport contact design@ryanpennings.com")
 print("")
 print("connecting.....")
@@ -42,25 +42,25 @@ time.sleep(2)
 # Setup var's
 ####################################################################
 
-#logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 # Set IP of robot or simulation here
-ROBOT_HOST = '192.168.40.128' #ROBOT_HOST = '192.168.100.132' 192.168.2.11
+ROBOT_HOST = "192.168.40.128"  # ROBOT_HOST = '192.168.100.132' 192.168.2.11
 ROBOT_PORT = 30004
-config_filename = 'control_loop_configuration.xml'
+config_filename = "control_loop_configuration.xml"
 
 keep_running = True
 
 logging.getLogger().setLevel(logging.INFO)
 
 conf = rtde_config.ConfigFile(config_filename)
-state_names, state_types = conf.get_recipe('state')
-setp_names, setp_types = conf.get_recipe('setp')
-tcp_names, tcp_types = conf.get_recipe('tcp')
-tcp_payload_names, tcp_payload_types = conf.get_recipe('tcp_payload')
-speed_names, speed_types = conf.get_recipe('speed')
-zone_names, zone_types = conf.get_recipe('zone')
-watchdog_names, watchdog_types = conf.get_recipe('watchdog')
+state_names, state_types = conf.get_recipe("state")
+setp_names, setp_types = conf.get_recipe("setp")
+tcp_names, tcp_types = conf.get_recipe("tcp")
+tcp_payload_names, tcp_payload_types = conf.get_recipe("tcp_payload")
+speed_names, speed_types = conf.get_recipe("speed")
+zone_names, zone_types = conf.get_recipe("zone")
+watchdog_names, watchdog_types = conf.get_recipe("watchdog")
 
 sendPointSwitch = False
 
@@ -100,17 +100,17 @@ listOfPoints = []
 listOfSpeeds = []
 listOfZones = []
 
-with open('printing.txt') as f:
-    reader = csv.reader(f,delimiter=',',quoting=csv.QUOTE_NONNUMERIC)
+with open("printing.txt") as f:
+    reader = csv.reader(f, delimiter=",", quoting=csv.QUOTE_NONNUMERIC)
     w, h = 6, len(list(f))
     f.seek(0)
-    listOfPoints = [[0 for x in range(w)] for y in range(h)] 
+    listOfPoints = [[0 for x in range(w)] for y in range(h)]
     listOfSpeeds = [0 for y in range(h)]
     listOfZones = [0 for y in range(h)]
     k = 0
     for row in reader:
-        #listOfPoints.append([])
-        listOfPoints[k]=[row[0],row[1],row[2],row[3],row[4],row[5]]
+        # listOfPoints.append([])
+        listOfPoints[k] = [row[0], row[1], row[2], row[3], row[4], row[5]]
         listOfSpeeds[k] = row[6]
         listOfZones[k] = row[7]
         k += 1
@@ -122,15 +122,15 @@ with open('printing.txt') as f:
 # 6 weight in kg
 # 7,8,9 are Centre of Gravity
 
-tcpPos = [0,0,0,0,0,0]
-tcpPayload = [0,0,0]
+tcpPos = [0, 0, 0, 0, 0, 0]
+tcpPayload = [0, 0, 0]
 
-with open('tcp.txt') as f2:
-    reader2 = csv.reader(f2,delimiter=',',quoting=csv.QUOTE_NONNUMERIC)
+with open("tcp.txt") as f2:
+    reader2 = csv.reader(f2, delimiter=",", quoting=csv.QUOTE_NONNUMERIC)
     f2.seek(0)
     for row in reader2:
-        tcpPos = [row[0],row[1],row[2],row[3],row[4],row[5]]
-        tcpPayload = [row[6],row[7],row[8],row[9]]
+        tcpPos = [row[0], row[1], row[2], row[3], row[4], row[5]]
+        tcpPayload = [row[6], row[7], row[8], row[9]]
 
 ####################################################################
 # Setup Points to send  - setp
@@ -143,20 +143,23 @@ setp.input_double_register_3 = 0
 setp.input_double_register_4 = 0
 setp.input_double_register_5 = 0
 setp.input_double_register_6 = 0
-  
+
 # The function "rtde_set_watchdog" in the "rtde_control_loop.urp" creates a 1 Hz watchdog
 watchdog.input_int_register_0 = 0
 
+
 def setp_to_list(setp):
     list = []
-    for i in range(0,6):
+    for i in range(0, 6):
         list.append(setp.__dict__["input_double_register_%i" % i])
     return list
 
+
 def list_to_setp(setp, list):
-    for i in range (0,6):
+    for i in range(0, 6):
         setp.__dict__["input_double_register_%i" % i] = list[i]
     return setp
+
 
 ####################################################################
 # Setup TCP & TCP Payload
@@ -175,31 +178,36 @@ tcp_payload.input_double_register_15 = 0
 tcp_payload.input_double_register_16 = 0
 tcp_payload.input_double_register_17 = 0
 
+
 def tcp_to_list(tcp):
     list = []
-    for i in range(7,13):
+    for i in range(7, 13):
         list.append(tcp.__dict__["input_double_register_%i" % i])
     return list
 
+
 def list_to_tcp(tcp, list):
     k = 0
-    for i in range (7,13):
+    for i in range(7, 13):
         tcp.__dict__["input_double_register_%i" % i] = list[k]
         k += 1
     return tcp
 
+
 def tcppayload_to_list(tcp_payload):
     list = []
-    for i in range(14,15):
+    for i in range(14, 15):
         list.append(tcp_payload.__dict__["input_double_register_%i" % i])
     return list
 
+
 def list_to_tcppayload(tcp_payload, list):
     k = 0
-    for i in range (14,15):
+    for i in range(14, 15):
         tcp_payload.__dict__["input_double_register_%i" % i] = list[k]
         k += 1
     return tcp_payload
+
 
 ####################################################################
 # Setup Speed & Zone
@@ -208,19 +216,22 @@ def list_to_tcppayload(tcp_payload, list):
 speed.input_double_register_18 = 0
 zone.input_double_register_19 = 0
 
+
 def createSpeed(speed, new_speed):
     speed.__dict__["input_double_register_18"] = new_speed
     return speed
+
 
 def createZone(zone, new_zone):
     zone.__dict__["input_double_register_19"] = new_zone
     return zone
 
+
 ####################################################################
 # Start Sync
 ####################################################################
 
-#start data synchronization
+# start data synchronization
 if not con.send_start():
     sys.exit()
 
@@ -233,7 +244,7 @@ while tcpSent == False:
     state = con.receive()
 
     if state is None:
-        print "No State - Take me to Church"
+        print("No State")
 
     # Set switch
     if state.output_int_register_0 == 2:
@@ -245,13 +256,13 @@ while tcpSent == False:
         tcpSent = True
         # Send TCP
         new_tcp = tcpPos
-        print "TCP Position: ", new_tcp
+        print("TCP Position: ", new_tcp)
         list_to_tcp(tcp, new_tcp)
         con.send(tcp)
 
         # Send TCP Weight & COG
         new_payload = tcpPayload
-        print "TCP Payload: ", new_payload
+        print("TCP Payload: ", new_payload)
         list_to_tcppayload(tcp_payload, new_payload)
         con.send(tcp_payload)
 
@@ -266,12 +277,12 @@ j = 0
 while keep_running:
     # receive the current state
     state = con.receive()
-    
+
     if state is None:
-        break;
+        break
 
     if j >= h:
-        break;
+        break
 
     # Set switch
     if state.output_int_register_0 == 1:
@@ -283,19 +294,19 @@ while keep_running:
 
         # Send Point
         new_setp = listOfPoints[j]
-        print new_setp
+        print(new_setp)
         list_to_setp(setp, new_setp)
         con.send(setp)
 
         # Send Speed
         new_speed = listOfSpeeds[j]
-        print new_speed
+        print(new_speed)
         createSpeed(speed, new_speed)
         con.send(speed)
 
         # Send Zone
         new_zone = listOfZones[j]
-        print new_zone
+        print(new_zone)
         createZone(zone, new_zone)
         con.send(zone)
 

@@ -1,7 +1,12 @@
-#### Disclaimer
-This code is now very old and I left it in a state that didn't produce great robot motion from memory, however it sent data prefectly fine. It appears some text files are missing, see this issue: https://github.com/ryanpennings/RTDE_UR/issues/1 on how to create some.
+#### Updated April 2021
+Now updated with the following:
+- new name!
+- updated to latest RTDE package as of 7th April 2021 (v2.6.0-release)
+- selectable move instruction in URP
 
-# RTDE_UR
+Full changelog at bottom of readme.
+
+## RTDE_UR
 Real Time Data Exchange streaming for universal robots. (Streams points to robot, for running large files)
 This was specifically developed to run large, complex 3D prints (i.e. 500,000 points and above, however it doesnt work for that as lots of points in quick succession cause jumpy movement, look at other commands.. [servoJ] from memory)
 
@@ -38,3 +43,11 @@ Most likely you started the main part of the robot program before the script on 
 
 #### See this link for more information
 https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/real-time-data-exchange-rtde-guide-22229/
+
+https://www.universal-robots.com/articles/ur/interface-communication/connecting-to-client-interfaces-within-ursim/
+
+
+#### Changelog
+
+7th April 2021
+- changes here..
