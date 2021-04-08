@@ -1,0 +1,17 @@
+ Program
+   BeforeStart
+     write_output_integer_register(0, 0)
+     MoveJ
+       jHome
+     Popup: Start Script on PC now
+   Robot Program
+     Script: int.script
+     Script: tcpsetup.script
+     set_tcp(tcp)
+     set_payload(weight, cog)
+     Loop
+       Script: loop_moveL.script
+       Script: varview.script
+     write_output_integer_register(0, 3)
+   Thread_1
+     Script: Thread_script.script

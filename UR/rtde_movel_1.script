@@ -1,30 +1,69 @@
-def rtde_2():
+def rtde_movel_1():
+  step_count_116ebf7c_d7ac_41ea_8b8c_1ae7a0e932c3 = 0
+  thread Step_Counter_Thread_32ec132d_f5a0_457c_a9b9_1264c4ba8fff():
+    while (True):
+      step_count_116ebf7c_d7ac_41ea_8b8c_1ae7a0e932c3 = step_count_116ebf7c_d7ac_41ea_8b8c_1ae7a0e932c3 + 1
+      sync()
+    end
+  end
+  run Step_Counter_Thread_32ec132d_f5a0_457c_a9b9_1264c4ba8fff()
+  set_safety_mode_transition_hardness(1)
   set_standard_analog_input_domain(0, 1)
   set_standard_analog_input_domain(1, 1)
   set_tool_analog_input_domain(0, 1)
   set_tool_analog_input_domain(1, 1)
   set_analog_outputdomain(0, 0)
   set_analog_outputdomain(1, 0)
-  set_tool_voltage(0)
   set_input_actions_to_default()
-  set_tcp(p[0.5,-0.013529999999999999,0.09813,-1.2092,-1.2092,1.2092])
-  set_payload(10.0, [0.0, 0.0, 0.0])
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_payload(0.0)
   set_gravity([0.0, 0.0, 9.82])
-  # begin: URCap Installation Node
-  #   Source: HelloWorld, 1.0.0.SNAPSHOT, Universal Robots
-  #   Type: Hello World
-  hello_world_popup_title = "HelloWorld"
-  # end: URCap Installation Node
+  set_tool_communication(False, 115200, 0, 1, 1.5, 3.5)
+  set_tool_output_mode(0)
+  set_tool_digital_output_mode(0, 1)
+  set_tool_digital_output_mode(1, 1)
+  set_tool_voltage(0)
+  global jHome_p=p[-.288196663269, -.528140443211, .635664321342, 1.708445133682, .728139699174, -1.736937727167]
+  global jHome_q=[0.7892378877518369, -1.7172294510372206, 1.6889551171549142, 0.0022689280275922435, 1.53274814910142, -1.5482815794441693]
   $ 1 "BeforeStart"
   $ 2 "write_output_integer_register(0, 0)"
   write_output_integer_register(0, 0)
   $ 3 "MoveJ"
-  $ 4 "Waypoint_1"
-  movej([0.7892378877518369, -1.7172294510372206, 1.6889551171549142, 0.0022689280275922435, 1.53274814910142, -1.5482815794441693], a=1.3962634015954636, v=1.0471975511965976)
-  $ 5 "Popup"
+  $ 4 "jHome" "breakAfter"
+  movej(jHome_q, a=1.3962634015954636, v=1.0471975511965976)
+  $ 5 "Popup: Start Script on PC now"
   popup("Start Script on PC now", "Message", False, False, blocking=True)
-  $ 7 "Robot Program"
-  $ 8 "Script: int"
+  $ 15 "Thread_1"
+  thread Thread_1():
+    while (True):
+      $ 16 "Script: Thread_script.script"
+           sync()
+           if (bufferStatus[bufferFillLoc]==0):
+            write_output_integer_register(0, 1)
+            sync()
+            global tmp=p[0,0,0,0,0,0]
+            tmp[0] = read_input_float_register(0)
+            tmp[1] = read_input_float_register(1)
+            tmp[2] = read_input_float_register(2)
+            tmp[3] = read_input_float_register(3)
+            tmp[4] = read_input_float_register(4)
+            tmp[5] = read_input_float_register(5)
+            listPoints[bufferFillLoc]=tmp
+            speed = read_input_float_register(18)
+            zone = read_input_float_register(19)
+            bufferStatus[bufferFillLoc]=1
+            bufferFillLoc=bufferFillLoc+1
+            if (bufferFillLoc>9):
+              bufferFillLoc=0
+            end
+            write_output_integer_register(0, 0)
+            sync()
+          end
+    end
+  end
+  threadId_Thread_1 = run Thread_1()
+  $ 6 "Robot Program"
+  $ 7 "Script: int.script"
   global setp=p[0,0,0,0,0,0]
   global setp2=p[0,0,0,0,0,0]
   global setp3=p[0,0,0,0,0,0]
@@ -50,7 +89,7 @@ def rtde_2():
   rtde_set_watchdog("input_int_register_0", 1, "PAUSE")
   write_output_integer_register(0, 0)
   
-  $ 9 "Script: tcpsetup.script"
+  $ 8 "Script: tcpsetup.script"
   keep_running = True
   global loopcheck = 0
   global loopcheck2 = 0
@@ -82,42 +121,13 @@ def rtde_2():
     write_output_integer_register(0, 0)
     sync()
   end
-  $ 10 "Script: Thread_1"
-   thread Thread_1():
-   while (True):
-       sync()
-       if (bufferStatus[bufferFillLoc]==0):
-        write_output_integer_register(0, 1)
-        sync()
-        global tmp=p[0,0,0,0,0,0]
-        tmp[0] = read_input_float_register(0)
-        tmp[1] = read_input_float_register(1)
-        tmp[2] = read_input_float_register(2)
-        tmp[3] = read_input_float_register(3)
-        tmp[4] = read_input_float_register(4)
-        tmp[5] = read_input_float_register(5)
-        listPoints[bufferFillLoc]=tmp
-        speed = read_input_float_register(18)
-        zone = read_input_float_register(19)
-        bufferStatus[bufferFillLoc]=1
-        bufferFillLoc=bufferFillLoc+1
-        if (bufferFillLoc>9):
-          bufferFillLoc=0
-        end
-        write_output_integer_register(0, 0)
-        sync()
-      end
-    end
-  end
-  $ 11 "threadId_Thread_1 = run Thread_1()"
-  threadId_Thread_1 = run Thread_1()
-  $ 13 "set_tcp(tcp)"
+  $ 9 "set_tcp(tcp)"
   set_tcp(tcp)
-  $ 14 "set_payload(weight, cog)"
+  $ 10 "set_payload(weight, cog)"
   set_payload(weight, cog)
-  $ 15 "Loop"
+  $ 11 "Loop"
   while (True):
-    $ 16 "Script: mainloop"
+    $ 12 "Script: loop_moveL.script"
     if (bufferStatus[robotloc]==1):
           sync()
           global moveTo=listPoints[robotloc]
@@ -131,7 +141,7 @@ def rtde_2():
           sync()
     end
     sync()
-    $ 17 "Script: varview.script"
+    $ 13 "Script: varview.script"
     setp=listPoints[0]
     setp2=listPoints[1]
     setp3=listPoints[2]
@@ -143,6 +153,6 @@ def rtde_2():
     setp9=listPoints[8]
     setp10=listPoints[9]
   end
-  $ 18 "write_output_integer_register(0, 3)"
+  $ 14 "write_output_integer_register(0, 3)"
   write_output_integer_register(0, 3)
 end
